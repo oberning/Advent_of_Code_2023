@@ -26,9 +26,9 @@ func main() {
 		currentLine := fileScanner.Text()
 		fmt.Print(cachedLineNumber, currentLine)
 
-		numbers := searchPattern(cachedLineNumber, currentLine, patternNumbers)
+		numbers := searchPattern(currentLine, patternNumbers)
 		numbersInLine = append(numbersInLine, numbers)
-		characters := searchPattern(cachedLineNumber, currentLine, patternSpecialChars)
+		characters := searchPattern(currentLine, patternSpecialChars)
 		charsInLine = append(charsInLine, characters)
 
 		// Check on same line
@@ -79,7 +79,7 @@ type Item struct {
 	endpos   int
 }
 
-func searchPattern(linenumber int, currentLine string, pattern *regexp.Regexp) []Item {
+func searchPattern(currentLine string, pattern *regexp.Regexp) []Item {
 	var items []Item
 	posItems := pattern.FindAllIndex([]byte(currentLine), -1)
 	for _, s := range posItems {
