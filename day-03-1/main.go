@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	cachedLineNumber := 0
+	lineNumber := 0
 	var numbersInLine [][]Item
 	var charsInLine [][]Item
 	sum := 0
@@ -24,8 +24,6 @@ func main() {
 
 	for fileScanner.Scan() {
 		currentLine := fileScanner.Text()
-		fmt.Print(cachedLineNumber, currentLine)
-
 		numbers := searchPattern(currentLine, patternNumbers)
 		numbersInLine = append(numbersInLine, numbers)
 		characters := searchPattern(currentLine, patternSpecialChars)
@@ -37,38 +35,35 @@ func main() {
 				distanceFromStart := character.startpos - number.startpos
 				distanceFromEnd := character.startpos - (number.endpos - 1)
 				if distanceFromStart >= -1 && distanceFromEnd <= 1 {
-					fmt.Println("To sum up inner line: ", number.item)
 					numberInt, _ := strconv.Atoi(number.item) // Regex ensure that it is a number
 					sum += numberInt
 				}
 			}
 		}
 		// Check on the previous line (first with searching for characters and then numbers)
-		if cachedLineNumber > 0 {
-			for _, character := range charsInLine[cachedLineNumber-1] {
+		if lineNumber > 0 {
+			for _, character := range charsInLine[lineNumber-1] {
 				for _, number := range numbers {
 					distanceFromStart := character.startpos - number.startpos
 					distanceFromEnd := character.startpos - (number.endpos - 1)
 					if distanceFromStart >= -1 && distanceFromEnd <= 1 {
-						fmt.Println("To sum up: ", number.item)
 						numberInt, _ := strconv.Atoi(number.item) // Regex ensure that it is a number
 						sum += numberInt
 					}
 				}
 			}
-			for _, number := range numbersInLine[cachedLineNumber-1] {
+			for _, number := range numbersInLine[lineNumber-1] {
 				for _, character := range characters {
 					distanceFromStart := character.startpos - number.startpos
 					distanceFromEnd := character.startpos - (number.endpos - 1)
 					if distanceFromStart >= -1 && distanceFromEnd <= 1 {
-						fmt.Println("To sum up: ", number.item)
 						numberInt, _ := strconv.Atoi(number.item) // Regex ensure that it is a number
 						sum += numberInt
 					}
 				}
 			}
 		}
-		cachedLineNumber++
+		lineNumber++
 	}
 	fmt.Println("The sum is: ", sum)
 }
